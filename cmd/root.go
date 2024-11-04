@@ -1,46 +1,61 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
-	"os"
-
+	"fmt"
 	"github.com/spf13/cobra"
+	neturl "net/url"
+	"time"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "stresstest",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+var (
+	url            string
+	requests       int
+	concurrency    int
+	defaultTimeout = 5 * time.Second
+)
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+var rootCmd = &cobra.Command{
+	Use:   "stress-test",
+	Short: "Sistema em CLI para realizar testes de carga em serviços web",
+	Run: func(cmd *cobra.Command, args []string) {
+		if !isValidURL(url) {
+			fmt.Errorf("URL inválida")
+			return
+		}
+
+		if requests <= 0 {
+			fmt.Errorf("Número de requests inválido")
+			return
+		}
+
+		if concurrency <= 0 {
+			fmt.Errorf("Número de chamadas simultâneas inválido")
+			return
+		}
+
+		executeLoadTest(url, requests, concurrency, defaultTimeout)
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		return
 	}
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	rootCmd.PersistentFlags().StringVar(&url, "url", "", "URL")
+	rootCmd.PersistentFlags().IntVar(&requests, "requests", 100, "Número de Requests")
+	rootCmd.PersistentFlags().IntVar(&concurrency, "concurrency", 10, "Número de chamadas simultâneas")
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.stresstest.yaml)")
+	err := rootCmd.MarkPersistentFlagRequired("url")
+	if err != nil {
+		return
+	}
+}
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func isValidURL(str string) bool {
+	parsedURL, err := neturl.Parse(str)
+	return err == nil && (parsedURL.Scheme == "http" || parsedURL.Scheme == "https")
 }

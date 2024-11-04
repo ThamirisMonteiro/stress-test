@@ -36,19 +36,19 @@ docker run <sua-imagem-docker> --url=http://google.com --requests=1000 --concurr
 ## 1. Setup do Projeto
 - [X] Inicializar o módulo Go com `go mod init stress-test`.
 - [X] Configurar o Cobra CLI com `cobra-cli init`.
-- [ ] Criar comandos principais para receber parâmetros via CLI (`--url`, `--requests`, `--concurrency`).
+- [X] Criar comandos principais para receber parâmetros via CLI (`--url`, `--requests`, `--concurrency`).
 
 ## 2. Configuração dos Parâmetros CLI
-- [ ] Definir e validar os parâmetros `--url`, `--requests`, e `--concurrency`.
-- [ ] Garantir que `--url` seja uma URL válida.
-- [ ] Verificar se `--requests` e `--concurrency` são números inteiros positivos.
-- [ ] Adicionar mensagens de erro para parâmetros inválidos.
+- [X] Definir e validar os parâmetros `--url`, `--requests`, e `--concurrency`.
+- [X] Garantir que `--url` seja uma URL válida.
+- [X] Verificar se `--requests` e `--concurrency` são números inteiros positivos.
+- [X] Adicionar mensagens de erro para parâmetros inválidos.
 
 ## 3. Execução do Teste de Carga
-- [ ] Criar uma função para realizar requests HTTP à URL especificada.
-- [ ] Implementar concorrência para distribuir requests com base no valor de `--concurrency`.
-- [ ] Garantir que o número total de requests enviados corresponda ao valor de `--requests`.
-- [ ] Gerenciar tempo limite e falhas nos requests (timeouts, falhas de conexão, etc.).
+- [X] Criar uma função para realizar requests HTTP à URL especificada.
+- [X] Implementar concorrência para distribuir requests com base no valor de `--concurrency`.
+- [X] Garantir que o número total de requests enviados corresponda ao valor de `--requests`.
+- [X] Gerenciar tempo limite e falhas nos requests (timeouts, falhas de conexão, etc.).
 
 ## 4. Coleta de Resultados
 - [ ] Monitorar o tempo total de execução dos requests.
