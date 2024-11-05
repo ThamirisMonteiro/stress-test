@@ -25,6 +25,8 @@ func executeLoadTest(url string, totalRequests int, concurrency int, timeout tim
 	results := make(chan *http.Response, totalRequests)
 	sem := make(chan struct{}, concurrency)
 	requestCount := int32(0)
+	status200Count := int32(0)
+	statusCounts := make(map[int]int)
 
 	startTime := time.Now()
 
@@ -46,6 +48,11 @@ func executeLoadTest(url string, totalRequests int, concurrency int, timeout tim
 			}
 
 			atomic.AddInt32(&requestCount, 1)
+			if resp.StatusCode == http.StatusOK {
+				atomic.AddInt32(&status200Count, 1)
+			} else {
+				statusCounts[resp.StatusCode]++
+			}
 			results <- resp
 		}()
 	}
@@ -54,21 +61,22 @@ func executeLoadTest(url string, totalRequests int, concurrency int, timeout tim
 	close(results)
 
 	totalDuration := time.Since(startTime)
-	fmt.Printf("Tempo total de execução: %s\n", totalDuration)
-	fmt.Printf("Total de requests enviados: %d\n", requestCount)
 
-	processResults(results)
+	generateReport(totalDuration, requestCount, status200Count, statusCounts)
 }
 
-func processResults(results chan *http.Response) {
-	statusCount := make(map[int]int)
+func generateReport(totalDuration time.Duration, totalRequests int32, status200Count int32, statusCounts map[int]int) {
+	fmt.Println("\n--- Relatório de Teste de Carga ---")
+	fmt.Println("-----------------------------------")
+	fmt.Printf("Tempo total de execução: %.2fs\n", totalDuration.Seconds())
+	fmt.Printf("Total de requests enviados: %d\n", totalRequests)
+	fmt.Printf("Requests com status 200: %d\n", status200Count)
 
-	for resp := range results {
-		statusCount[resp.StatusCode]++
-		resp.Body.Close()
+	fmt.Println("\nDistribuição de outros códigos de status:")
+	for code, count := range statusCounts {
+		fmt.Printf("Código %d: %d\n", code, count)
 	}
-
-	for status, count := range statusCount {
-		fmt.Printf("Status %d: %d\n", status, count)
-	}
+	fmt.Println("-----------------------------------")
+	fmt.Println("Teste concluído com sucesso.")
+	fmt.Println("-----------------------------------")
 }

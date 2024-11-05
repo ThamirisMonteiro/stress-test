@@ -24,12 +24,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		if requests <= 0 {
-			fmt.Errorf("Número de requests inválido")
+			fmt.Errorf("número de requests inválido")
 			return
 		}
 
 		if concurrency <= 0 {
-			fmt.Errorf("Número de chamadas simultâneas inválido")
+			fmt.Errorf("número de chamadas simultâneas inválido")
 			return
 		}
 
