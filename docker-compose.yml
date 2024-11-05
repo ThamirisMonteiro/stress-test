@@ -3,11 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
 
   tests:
+    image: "golang:1.19"
+    container_name: test
+    working_dir: /app
+    command: [ "go", "test", "./..." ]
     build:
       context: .
       dockerfile: Dockerfile
-      target: tests
+    volumes:
+      - .:/app

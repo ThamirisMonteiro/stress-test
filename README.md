@@ -17,5 +17,5 @@ docker compose up tests
 Para rodar a aplicação e realizar um teste de carga, utilize o comando abaixo, substituindo a URL, o número de requisições e a concorrência conforme necessário:
 
 ```bash
-docker-compose run app --url=http://google.com --requests=1000 --concurrency=10
+docker compose run app --url=http://google.com --requests=1000 --concurrency=100
 ```
