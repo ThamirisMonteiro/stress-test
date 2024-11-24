@@ -14,6 +14,5 @@ CMD ["go", "test", "-v", "./..."]
 FROM alpine:latest
 WORKDIR /root/
 COPY --from=builder /app/stress-test .
-RUN chmod +x ./stress-test
-ENTRYPOINT ["./stress-test"]
-
+RUN chmod +x /root/stress-test
+ENTRYPOINT ["/root/stress-test"]
